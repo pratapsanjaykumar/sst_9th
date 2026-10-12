@@ -47,6 +47,19 @@
             .page-container { margin: 0; box-shadow: none; page-break-after: always; width: 210mm; min-height: 297mm; }
             .no-print { display: none; }
         }
+        * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; /* Disables standard text selection to prevent copying */
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Allow inputs to be selectable */
+input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
     </style>
 </head>
 <body class="bg-slate-900 text-slate-800 antialiased">
@@ -958,6 +971,47 @@
                 btn.disabled = false;
             }
         });
-    </script>
+ 
+
+    
+// Security Guard: Disable Right Click, Copy, Cut, Select, and DevTools inspection keys
+function initSecurityGuards() {
+    // Disable right click context menu
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showProtectionNotice();
+    });
+
+    // Disable keyboard shortcuts for copy (Ctrl+C), view source (Ctrl+U), save (Ctrl+S), inspect (F12 / Ctrl+Shift+I)
+    document.addEventListener('keydown', function(e) {
+        if (
+            (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'a' || e.key === 'p' || e.key === 'i' || e.key === 'j')) ||
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))
+        ) {
+            if (e.key === 'p') return; // Allow print shortcut
+            e.preventDefault();
+            showProtectionNotice();
+        }
+    });
+}
+
+function showProtectionNotice() {
+    let notice = document.getElementById('securityNoticeBox');
+    if (!notice) {
+        notice = document.createElement('div');
+        notice.id = 'securityNoticeBox';
+        notice.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl shadow-2xl text-xs flex items-center gap-2 transition-all duration-300';
+        notice.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Content protection enabled by Pratap Sanjay Sir.';
+        document.body.appendChild(notice);
+        setTimeout(() => {
+            notice.style.opacity = '0';
+            setTimeout(() => notice.remove(), 400);
+        }, 2200);
+    }
+}
+   </script>
+
+
 </body>
 </html>
